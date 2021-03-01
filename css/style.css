@@ -11,3 +11,7 @@ header {
 .navbar-brand img {
     width: 10rem;
 }
+
+.card img {
+    min-height: 139px;
+}
