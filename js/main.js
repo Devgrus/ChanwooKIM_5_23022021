@@ -208,12 +208,8 @@ function sendForm(value) {
     return new Promise((resolve) => {
         let request = new XMLHttpRequest();
         request.onreadystatechange = function() {
-            if (this.readyState == XMLHttpRequest.DONE  && this.status >= 200 && this.status <= 299) {
+            if (this.readyState == XMLHttpRequest.DONE  && (this.status == 200 || this.status == 201)) {
                 resolve(JSON.parse(this.responseText));
-                console.log('les données sont envoyées');
-            } else {
-                //new Error('les données ne sont pas envoyées');
-                console.log("les données ne sont pas envoyées");
             }
         };
         request.open('POST', APIUrl + order);
@@ -253,20 +249,22 @@ function validateCart() {
                 city : cityValue,
                 email : emailValue
             };
-            let orderedProducts = [];
+            let products = [];
             for(object of resultCart) {
-                orderedProducts.push(object.id);
+                products.push(object.id);
             }
             orderInfo = {
                 contact,
-                orderedProducts
+                products
             };
 
             let sendOrder = JSON.stringify(orderInfo);
-            alert(sendOrder);
+            console.log(sendOrder);
             localStorage.setItem("sendOrder", sendOrder);
-            sendForm(sendOrder);
-            //location.href = "./payment-success.html";
+            sendForm(sendOrder).then(response => {
+                console.log(response);
+            })
+            location.href = "./payment-success.html";
             event.preventDefault(); // Sans preventDefault, le button submit va rafraîchir la page donc location.href ne fonctionne pas.
             
         }
