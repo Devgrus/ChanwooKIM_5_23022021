@@ -38,31 +38,31 @@
             <!-- End Cart list -->
             <!-- Form -->
             <div id="container-form" class="col-12 col-md-6">
-                <form>
+                <form id="form-customer">
                     <div class="form-row">
                         <div class="form-group col-12 col-md-6">
                             <label for="firstName">Prénom</label>
-                            <input type="text" class="form-control" id="firstName" placeholder="Prénom">
+                            <input type="text" class="form-control" id="firstName" placeholder="Prénom" pattern="^[A-Za-z]+$" required>
                         </div>
                         <div class="form-group col-12 col-md-6">
                             <label for="lastName">Nom</label>
-                            <input type="text" class="form-control" id="lastName" placeholder="Nom">
+                            <input type="text" class="form-control" id="lastName" placeholder="Nom" pattern="^[A-Za-z]+$" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address">Address</label>
-                        <input type="text" class="form-control" id="address" placeholder="Adresse">
+                        <input type="text" class="form-control" id="address" placeholder="Adresse" pattern="^[#.0-9a-zA-Z\s,-]+$" required>
                     </div>
                     <div class="form-group">
                         <label for="city">Ville</label>
-                        <input type="text" class="form-control" id="city" placeholder="Ville">
+                        <input type="text" class="form-control" id="city" placeholder="Ville" pattern="^[#.a-zA-Z\s,-]+$" required>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="text" class="form-control" id="email" placeholder="Email">
+                        <input type="text" class="form-control" id="email" placeholder="abc@xyz.com" pattern="^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$" required>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-primary" id="send">Acheter</button>
+                        <button type="submit" onchange="payment-success.html" class="btn btn-primary" id="send">Acheter</button>
                     </div>
                 </form>
             </div>
