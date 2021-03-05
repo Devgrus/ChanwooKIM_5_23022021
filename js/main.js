@@ -131,8 +131,8 @@ async function showCart() {
     // Si resultCart n'a pas de valeur ou n'existe pas, cela veut dire que le panier est vide.
     if(resultCart == "" || resultCart == null) {
         const div = document.createElement('div');
-        div.className = 'row';
-        div.innerHTML = `Votre panier est vide`;
+        div.className = 'row d-flex h-100 align-items-center justify-content-center';
+        div.innerHTML = `<p>Votre panier est vide</p>`;
         document.getElementById('container-cart').appendChild(div);
     } else {
         for(const object of resultCart) {
@@ -143,9 +143,19 @@ async function showCart() {
                 productInfo = await getProduct();
                 let productPrice = productInfo.price;
                 const div = document.createElement('div');
-                div.className = 'row';
+                div.className = 'row bg-light my-2';
                 div.id = `product-${productInfo._id}`
-                div.innerHTML = `<div class="col-3">
+                div.innerHTML = `<div class="col-9 my-3"><div class="row d-flex align-items-center my-2">
+                <div class="col-5"><img src="${productInfo.imageUrl}" class="img-fluid rounded" /></div>
+                <div class="col-7">${productInfo.name}</div></div>
+                <div class="row d-flex align-items-center my-2">
+                <div class="col d-flex">Qauntité&nbsp&nbsp<select id="amount-${productInfo._id}"></select></div>
+                <div class="col price" id = "price-${productInfo._id}">${productInfo.price * object.amount / 100} €</div></div></div>
+                <div class="col-3 d-flex align-items-center">
+                <div><button type="submit" id="delete-${object.id}" class="btn btn-danger"><i class="far fa-trash-alt text-light"></i></button></div>
+                </div>
+                `;
+                /*div.innerHTML = `<div class="col-3">
                 <img src="${productInfo.imageUrl}" class="img-fluid" /></div>
                 <div class="col-9"><div class="row">
                 <div class="col-4">${productInfo.name}</div>
@@ -153,7 +163,7 @@ async function showCart() {
                 <div class="col-3 price" id = "price-${productInfo._id}">${productInfo.price * object.amount / 100} €</div>
                 <div class="col-3"><button type="submit" id="delete-${object.id}" class="btn btn-danger"><i class="far fa-trash-alt text-light"></i></button></div></div>
                 </div>
-                `;
+                `;*/
                 document.getElementById('container-cart').append(div);
                 for(let i = 1; 5 >= i; i++) {
                     const option = document.createElement('option');
@@ -187,6 +197,7 @@ async function showCart() {
         }
         const div = document.createElement('div');
         div.id = 'priceTotal';
+        div.className = 'my-2';
         document.getElementById('container-cart').append(div);
         priceTotal();
     }
@@ -200,6 +211,7 @@ function priceTotal() {
         priceSum += getPrice[i].innerText.replace('€', '') * 1;
     }
     document.getElementById('priceTotal').innerHTML = `Total : ${priceSum} €`;
+    localStorage.setItem("priceTotal", priceSum);
 }
 
 //Envoyer les données (contact, id de produit) au serveur
@@ -210,6 +222,7 @@ function sendForm(value) {
         request.onreadystatechange = function() {
             if (this.readyState == XMLHttpRequest.DONE  && (this.status == 200 || this.status == 201)) {
                 resolve(JSON.parse(this.responseText));
+                location.href = "./payment-success.html";
             }
         };
         request.open('POST', APIUrl + order);
@@ -222,34 +235,46 @@ function sendForm(value) {
 function validateCart() {
     //règles Regex pour le formulaire
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const textRegex = /^[A-Za-z]+$/;
+    const nameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/;
     const addressRegex = /^[#.0-9a-zA-Z\s,-]+$/;
     const cityRegex = /^[#.a-zA-Z\s,-]+$/;
     
+    //Appliquez l'effet de Regex
+    const firstName = document.getElementById('firstName');
+    const lastName = document.getElementById('lastName');
+    const address = document.getElementById('address');
+    const city = document.getElementById('city');
+    const email = document.getElementById('email');
+    regexEffect(firstName, nameRegex);
+    regexEffect(lastName, nameRegex);
+    regexEffect(address, addressRegex);
+    regexEffect(city, cityRegex);
+    regexEffect(email, emailRegex);
+    
     //Vérification de la commande
-    let send = document.getElementById('form-customer');
+    const send = document.getElementById('form-customer');
     send.addEventListener('submit',(event) => {
-        let firstNameValue = document.getElementById('firstName').value;
-        let lastNameValue = document.getElementById('lastName').value;
-        let addressValue = document.getElementById('address').value;
-        let cityValue = document.getElementById('city').value;
-        let emailValue = document.getElementById('email').value;
-        let resultCart = JSON.parse(localStorage.getItem("cartJson"));
+        const firstNameValue = document.getElementById('firstName').value;
+        const lastNameValue = document.getElementById('lastName').value;
+        const addressValue = document.getElementById('address').value;
+        const cityValue = document.getElementById('city').value;
+        const emailValue = document.getElementById('email').value;
+        const resultCart = JSON.parse(localStorage.getItem("cartJson"));
         // Si son panier est vide
-        if (resultCart == "") {
+        if (resultCart == "" || resultCart == null) {
             alert("Votre panier est vide !")
             event.preventDefault(); // Sans preventDefault, le button submit va rafraîchir la page.
         }
         // Si son panier n'est pas vide et l'utilisateur a rempli correctement le formulaire
         else if (resultCart != "" && textRegex.test(firstNameValue) && textRegex.test(lastNameValue) && addressRegex.test(addressValue) && cityRegex.test(cityValue) && emailRegex.test(emailValue)) {
-            let contact = {
+            const contact = {
                 firstName : firstNameValue,
                 lastName : lastNameValue,
                 address : addressValue,
                 city : cityValue,
                 email : emailValue
             };
-            let products = [];
+            const products = [];
             for(object of resultCart) {
                 products.push(object.id);
             }
@@ -258,13 +283,13 @@ function validateCart() {
                 products
             };
 
-            let sendOrder = JSON.stringify(orderInfo);
+            const sendOrder = JSON.stringify(orderInfo);
             console.log(sendOrder);
-            localStorage.setItem("sendOrder", sendOrder);
             sendForm(sendOrder).then(response => {
                 console.log(response);
+                localStorage.setItem("orderResponse", JSON.stringify(response));
             })
-            location.href = "./payment-success.html";
+            
             event.preventDefault(); // Sans preventDefault, le button submit va rafraîchir la page donc location.href ne fonctionne pas.
             
         }
@@ -274,6 +299,48 @@ function validateCart() {
     })
 }
 
+//Créer une effet regex dans le formulaire à l'aide des class de Bootstrap.
+function regexEffect(target, regex) {
+    target.addEventListener('input', (event)=> {
+        if(regex.test(event.target.value) == false) {
+            if(target.classList.contains("is-valid")) {
+                target.classList.replace("is-valid","is-invalid");
+            } else {
+                target.classList.add("is-invalid");
+            }
+        } else {
+            if(target.classList.contains("is-invalid")) {
+                target.classList.replace("is-invalid","is-valid");
+            } else {
+                target.classList.add("is-valid");
+            }
+        }
+    })
+}
+
+//afficher l'id de commande et le nom d'utilisateur
+function showOrderInfo() {
+    const orderResponse = JSON.parse(localStorage.getItem("orderResponse"));
+    const div = document.getElementById('container-payment');
+    div.innerHTML = `<div class="d-flex flex-column align-items-center">
+    <i id="check-circle" class="fas fa-check-circle text-success display-1"></i>
+    <h1 class="my-3">Paiement réussi</h1>
+    <p class="h5 my-2">Merci pour votre commande !</p>
+    <!-- Return to main page -->
+    <a class="btn btn-primary" href="index.html">Retournez à la page d'acceuil</a>
+    <!-- End Return to main page -->
+    <!-- Show client name and order ID -->
+    <div class="my-5"><h2 class="h4 my-3">Information de la commande</h2>
+    <p><strong>Nom du client :</strong> ${orderResponse.contact.firstName} ${orderResponse.contact.lastName}</p>
+    <p><strong>Numéro de la commande :</strong>  ${orderResponse.orderId}</p>
+    <p><strong>Prix total :</strong> ${localStorage.getItem("priceTotal")} €</p>
+    </div>
+    <!-- End Show client name and product -->
+    </div>
+    `;
+
+    localStorage.clear();
+}
 
 // Exécuter les fonctions lors d'une overture de la page.
 getProduct().then(values => {
@@ -288,5 +355,7 @@ getProduct().then(values => {
     } else if(window.location.pathname == "/cart.html") {
         showCart();
         validateCart();
-    };
+    } else if(window.location.pathname == "/payment-success.html") {
+        showOrderInfo();
+    }
 });
