@@ -7,7 +7,7 @@ function showOrderInfo() {
     <h1 class="my-3">Paiement réussi</h1>
     <p class="h5 my-2">Merci pour votre commande !</p>
     <!-- Return to main page -->
-    <a class="btn btn-primary" href="index.html">Retournez à la page d'acceuil</a>
+    <a class="btn btn-primary" href="index.html">Revenir à la page d'acceuil</a>
     <!-- End Return to main page -->
     <!-- Show client name and order ID -->
     <div class="my-5"><h2 class="h4 my-3">Information de la commande</h2>

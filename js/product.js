@@ -17,7 +17,7 @@ async function showProduct() {
         <select class="form-control" id="product-option">
         <option>Choisissez une option</option></select></form>
         <p class="text-right h4 my-2">${productInfo.price / 100} €</p>
-        <button type="submit" id="addCart" class="btn btn-primary btn-block"><i class="fas fa-shopping-basket text-light mr-3"></i>Ajoutez au panier</button>
+        <button type="submit" id="addCart" class="btn btn-primary btn-block"><i class="fas fa-shopping-basket text-light mr-3"></i>Ajouter au panier</button>
         </div>`;
         document.getElementById('product-description').appendChild(div);
         
@@ -35,7 +35,7 @@ async function showProduct() {
     productId = "";
 }
 
-//Ajouter le produit lors d'un clic sur le button "Ajoutez au panier"
+//Ajouter le produit lors d'un clic sur le button "Ajouter au panier"
 let findIdPlace = "";
 function addCart() {
     //Si l'id dans l'URL n'est pas correct
