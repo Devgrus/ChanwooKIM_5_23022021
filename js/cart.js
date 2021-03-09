@@ -132,6 +132,7 @@ function validateCart() {
         }
         else if((resultCart != "" || resultCart != null) && (nameRegex.test(firstNameValue) == false || nameRegex.test(lastNameValue) == false || addressRegex.test(addressValue) == false || cityRegex.test(cityValue) == false || emailRegex.test(emailValue) == false)){
             alert('Veuillez remplir le formulaire "Contact"');
+            event.preventDefault();
         }
         // Si son panier n'est pas vide et l'utilisateur a rempli correctement le formulaire
         else if ((resultCart != "" || resultCart != null) && nameRegex.test(firstNameValue) && nameRegex.test(lastNameValue) && addressRegex.test(addressValue) && cityRegex.test(cityValue) && emailRegex.test(emailValue)) {
